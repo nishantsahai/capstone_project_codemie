@@ -1,0 +1,12 @@
+Stage: Build - SUCCESS - 120 sec
+Stage: Test - FAILED - 300 sec - Error: Timeout waiting for test container
+Stage: Deploy - SKIPPED
+Stage: Build - SUCCESS - 118 sec
+Stage: Test - SUCCESS - 290 sec
+Stage: Deploy - SUCCESS - 42 sec
+Stage: Build - SUCCESS - 121 sec
+Stage: Test - FAILED - 305 sec - Error: Timeout waiting for test container
+Stage: Deploy - SUCCESS - 41 sec
+Stage: Build - SUCCESS - 119 sec
+Stage: Test - SUCCESS - 315 sec
+Stage: Deploy - SUCCESS - 40 sec

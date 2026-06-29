@@ -1,0 +1,9 @@
+::group::Build | SUCCESS | 95 sec
+::group::Test | FAILED | 220 sec | Error: AssertionError
+::group::Deploy | SKIPPED
+::group::Build | SUCCESS | 102 sec
+::group::Test | SUCCESS | 210 sec
+::group::Deploy | SUCCESS | 35 sec
+::group::Build | SUCCESS | 98 sec
+::group::Test | FAILED | 225 sec | Error: AssertionError
+::group::Deploy | SUCCESS | 36 sec
