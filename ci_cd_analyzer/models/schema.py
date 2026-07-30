@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List, Optional, Literal
+from typing import Any, Literal
 
 PipelineSource = Literal["jenkins", "github"]
 StageStatus = Literal["SUCCESS", "FAILED", "SKIPPED", "UNSTABLE", "UNKNOWN"]
@@ -11,10 +11,10 @@ StageStatus = Literal["SUCCESS", "FAILED", "SKIPPED", "UNSTABLE", "UNKNOWN"]
 class StageEvent:
     stage: str
     status: StageStatus
-    duration_seconds: Optional[float] = None
-    error_message: Optional[str] = None
-    raw_line: Optional[str] = None
-    run_id: Optional[str] = None
+    duration_seconds: float | None = None
+    error_message: str | None = None
+    raw_line: str | None = None
+    run_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -49,13 +49,13 @@ class FailurePattern:
     stage: str
     failure_count: int
     share_of_failures: float
-    common_errors: List[str] = field(default_factory=list)
+    common_errors: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
 class FlakyStageInsight:
     stage: str
-    pattern: List[str]
+    pattern: list[str]
     insight: str
 
 
@@ -69,11 +69,11 @@ class ActionableSuggestion:
 @dataclass(frozen=True)
 class AnalysisReport:
     summary: PipelineSummary
-    stage_metrics: List[StageMetrics] = field(default_factory=list)
-    bottlenecks: List[BottleneckInsight] = field(default_factory=list)
-    failure_patterns: List[FailurePattern] = field(default_factory=list)
-    flaky_stages: List[FlakyStageInsight] = field(default_factory=list)
-    suggestions: List[ActionableSuggestion] = field(default_factory=list)
+    stage_metrics: list[StageMetrics] = field(default_factory=list)
+    bottlenecks: list[BottleneckInsight] = field(default_factory=list)
+    failure_patterns: list[FailurePattern] = field(default_factory=list)
+    flaky_stages: list[FlakyStageInsight] = field(default_factory=list)
+    suggestions: list[ActionableSuggestion] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)

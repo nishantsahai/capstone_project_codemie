@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
 import unittest
+from pathlib import Path
 
 from ci_cd_analyzer.analyzer.flaky_detector import detect_flaky
 from ci_cd_analyzer.parser.github_parser import parse_github_log

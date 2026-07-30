@@ -1,16 +1,12 @@
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import streamlit as st
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
 from ci_cd_analyzer.utils.helpers import analyze_pipeline_log
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 SAMPLE_LOGS = {
     "jenkins": PROJECT_ROOT / "examples" / "jenkins_sample.log",
@@ -102,48 +98,60 @@ if analyze_button:
 
             st.subheader("Bottlenecks")
             if report.bottlenecks:
-                st.table([
-                    {
-                        "Stage": item.stage,
-                        "Avg Time (s)": round(item.average_duration_seconds, 1),
-                        "Multiplier": f"{item.multiplier_vs_average:.1f}x",
-                        "Insight": item.insight,
-                    }
-                    for item in report.bottlenecks
-                ])
+                st.table(
+                    [
+                        {
+                            "Stage": item.stage,
+                            "Avg Time (s)": round(item.average_duration_seconds, 1),
+                            "Multiplier": f"{item.multiplier_vs_average:.1f}x",
+                            "Insight": item.insight,
+                        }
+                        for item in report.bottlenecks
+                    ]
+                )
             else:
                 st.info("No major bottlenecks detected from the current log sample.")
 
             st.subheader("Failure patterns")
             if report.failure_patterns:
-                st.table([
-                    {
-                        "Stage": item.stage,
-                        "Failures": item.failure_count,
-                        "Share": f"{item.share_of_failures:.0%}",
-                        "Common errors": ", ".join(item.common_errors) if item.common_errors else "None captured",
-                    }
-                    for item in report.failure_patterns
-                ])
+                st.table(
+                    [
+                        {
+                            "Stage": item.stage,
+                            "Failures": item.failure_count,
+                            "Share": f"{item.share_of_failures:.0%}",
+                            "Common errors": (
+                                ", ".join(item.common_errors)
+                                if item.common_errors
+                                else "None captured"
+                            ),
+                        }
+                        for item in report.failure_patterns
+                    ]
+                )
             else:
                 st.success("No failures detected in this log.")
 
             st.subheader("Flaky stages")
             if report.flaky_stages:
-                st.table([
-                    {
-                        "Stage": item.stage,
-                        "Pattern": " → ".join(item.pattern),
-                        "Insight": item.insight,
-                    }
-                    for item in report.flaky_stages
-                ])
+                st.table(
+                    [
+                        {
+                            "Stage": item.stage,
+                            "Pattern": " → ".join(item.pattern),
+                            "Insight": item.insight,
+                        }
+                        for item in report.flaky_stages
+                    ]
+                )
             else:
                 st.info("No flaky stage pattern detected.")
 
             st.subheader("Actionable suggestions")
             if report.suggestions:
                 for suggestion in report.suggestions:
-                    st.warning(f"**{suggestion.area}:** {suggestion.suggestion}  \nReason: {suggestion.reason}")
+                    st.warning(
+                        f"**{suggestion.area}:** {suggestion.suggestion}  \nReason: {suggestion.reason}"
+                    )
             else:
                 st.success("No immediate suggestions were generated from the current log.")

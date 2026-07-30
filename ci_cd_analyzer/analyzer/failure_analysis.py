@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from typing import Iterable, List
+from collections.abc import Iterable
 
 from ..models.schema import FailurePattern, StageEvent
 
 
-def analyze_failures(events: Iterable[StageEvent]) -> List[FailurePattern]:
+def analyze_failures(events: Iterable[StageEvent]) -> list[FailurePattern]:
     failed_events = [event for event in events if event.status == "FAILED"]
     total_failures = len(failed_events)
     if total_failures == 0:
@@ -20,7 +20,7 @@ def analyze_failures(events: Iterable[StageEvent]) -> List[FailurePattern]:
         if event.error_message:
             errors_by_stage[event.stage][event.error_message.strip()] += 1
 
-    patterns: List[FailurePattern] = []
+    patterns: list[FailurePattern] = []
     for stage, failure_count in failures_by_stage.most_common():
         common_errors = [error for error, _ in errors_by_stage[stage].most_common(3)]
         patterns.append(

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Dict, Iterable, List, Sequence
+from collections.abc import Iterable, Sequence
+from itertools import pairwise
 
 from ..models.schema import FlakyStageInsight, StageEvent
 
@@ -26,19 +27,19 @@ def detect_flaky(status_list: Sequence[str]) -> bool:
         return True
 
     toggles = 0
-    for left, right in zip(canonical_statuses, canonical_statuses[1:]):
+    for left, right in pairwise(canonical_statuses):
         if left in {"PASS", "FAIL"} and right in {"PASS", "FAIL"} and left != right:
             toggles += 1
 
     return toggles >= 3 and {"PASS", "FAIL"}.issubset(set(canonical_statuses))
 
 
-def detect_flaky_stages(events: Iterable[StageEvent]) -> List[FlakyStageInsight]:
-    stage_history: Dict[str, List[str]] = defaultdict(list)
+def detect_flaky_stages(events: Iterable[StageEvent]) -> list[FlakyStageInsight]:
+    stage_history: dict[str, list[str]] = defaultdict(list)
     for event in events:
         stage_history[event.stage].append(event.status)
 
-    insights: List[FlakyStageInsight] = []
+    insights: list[FlakyStageInsight] = []
     for stage, statuses in stage_history.items():
         if not detect_flaky(statuses):
             continue
