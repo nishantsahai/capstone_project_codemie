@@ -23,6 +23,10 @@ build/
 dist/
 *.egg-info/
 
+# Project-local artifacts
+artifacts/
+reports/
+
 # Local environment files
 .env
 .env.*
