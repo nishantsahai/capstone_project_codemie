@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ci-cd-analyzer"
+version = "0.1.0"
+description = "CI/CD Pipeline Analyzer"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "CodeMie" }]
+dependencies = [
+  "fastapi",
+  "uvicorn",
+  "streamlit",
+  "pandas",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+  "ruff>=0.5",
+  "black>=24.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["ci_cd_analyzer*"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.black]
+line-length = 100

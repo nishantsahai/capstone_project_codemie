@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-from typing import List
 
 from ..models.schema import StageEvent
 
@@ -13,8 +12,8 @@ GITHUB_STAGE_PATTERN = re.compile(
 )
 
 
-def parse_github_log(log_text: str) -> List[StageEvent]:
-    events: List[StageEvent] = []
+def parse_github_log(log_text: str) -> list[StageEvent]:
+    events: list[StageEvent] = []
 
     for raw_line in log_text.splitlines():
         line = raw_line.strip()

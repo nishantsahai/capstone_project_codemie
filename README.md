@@ -1,59 +1,50 @@
 # CI/CD Pipeline Analyzer
 
-Tooling for parsing Jenkins and GitHub Actions logs, detecting failure trends, slow stages, flaky stages, and surfacing actionable suggestions.
+A small toolkit (FastAPI + Streamlit) to analyze CI/CD pipeline logs (Jenkins and GitHub Actions) and surface:
+- stage metrics (avg duration, failure rate)
+- bottlenecks
+- failure patterns
+- flaky stage insights
 
-## What is included
-
-- FastAPI backend for log analysis
-- Streamlit dashboard for interactive review
-- Parsers for Jenkins-style and GitHub Actions-style logs
-- Stage, failure, flaky-stage, and bottleneck analysis
-- Example log files and unit tests
-
-## Project layout
-
-```
-ci_cd_analyzer/
-├── main.py
-├── parser/
-├── analyzer/
-├── models/
-├── utils/
-└── ui/
-```
-
-## Run locally
-
-Install dependencies:
+## Setup (recommended)
 
 ```bash
-pip install -r requirements.txt
+python -m venv .venv
+# activate venv
+pip install -e .[dev]
 ```
 
-Start the API:
+## Run the API
 
 ```bash
 uvicorn ci_cd_analyzer.main:app --reload
 ```
 
-Start the Streamlit dashboard:
+## Run the Streamlit UI
 
 ```bash
 streamlit run ci_cd_analyzer/ui/streamlit_app.py
 ```
 
-## Input format examples
+## API usage
 
-Jenkins example:
+`POST /analyze`
 
-```text
-Stage: Build - SUCCESS - 120 sec
-Stage: Test - FAILED - 300 sec - Error: Timeout waiting for test container
+Example:
+
+```bash
+curl -X POST http://127.0.0.1:8000/analyze \
+  -H 'Content-Type: application/json' \
+  -d '{"source":"jenkins","log_text":"Stage: Build - SUCCESS - 120 sec"}'
 ```
 
-GitHub Actions example:
+Validation errors return HTTP 400 with the following envelope:
 
-```text
-::group::Build | SUCCESS | 95 sec
-::group::Test | FAILED | 220 sec | Error: AssertionError
+```json
+{
+  "error": "Invalid request",
+  "details": [
+    {"loc": ["body", "log_text"], "msg": "log_text is required.", "type": "value_error"}
+  ]
+}
 ```

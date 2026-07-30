@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from pathlib import Path
 from statistics import mean
-from typing import Iterable, List
 
 from ..analyzer.failure_analysis import analyze_failures
 from ..analyzer.flaky_detector import detect_flaky_stages
@@ -20,7 +20,7 @@ from ..parser.github_parser import parse_github_log
 from ..parser.jenkins_parser import parse_jenkins_log
 
 
-def parse_pipeline_log(source: PipelineSource, log_text: str) -> List[StageEvent]:
+def parse_pipeline_log(source: PipelineSource, log_text: str) -> list[StageEvent]:
     source_name = source.lower().strip()
     if source_name == "jenkins":
         return parse_jenkins_log(log_text)
@@ -35,7 +35,9 @@ def load_log_text(file_path: str) -> str:
 
 def summarize_pipeline(events: Iterable[StageEvent]) -> PipelineSummary:
     event_list = list(events)
-    durations = [event.duration_seconds for event in event_list if event.duration_seconds is not None]
+    durations = [
+        event.duration_seconds for event in event_list if event.duration_seconds is not None
+    ]
     total_runs = 1 if event_list else 0
     success_runs = 1 if event_list and all(event.status != "FAILED" for event in event_list) else 0
     failure_runs = total_runs - success_runs
@@ -51,14 +53,18 @@ def summarize_pipeline(events: Iterable[StageEvent]) -> PipelineSummary:
     )
 
 
-def identify_bottlenecks(stage_metrics: Iterable[StageMetrics]) -> List[BottleneckInsight]:
+def identify_bottlenecks(stage_metrics: Iterable[StageMetrics]) -> list[BottleneckInsight]:
     metric_list = list(stage_metrics)
-    durations = [metric.average_duration_seconds for metric in metric_list if metric.average_duration_seconds > 0]
+    durations = [
+        metric.average_duration_seconds
+        for metric in metric_list
+        if metric.average_duration_seconds > 0
+    ]
     if not durations:
         return []
 
     overall_average = mean(durations)
-    bottlenecks: List[BottleneckInsight] = []
+    bottlenecks: list[BottleneckInsight] = []
     for metric in sorted(metric_list, key=lambda item: item.average_duration_seconds, reverse=True):
         if metric.average_duration_seconds <= overall_average * 1.2:
             continue
@@ -79,8 +85,8 @@ def generate_suggestions(
     bottlenecks: Iterable[BottleneckInsight],
     failure_patterns: Iterable,
     flaky_stages: Iterable,
-) -> List[ActionableSuggestion]:
-    suggestions: List[ActionableSuggestion] = []
+) -> list[ActionableSuggestion]:
+    suggestions: list[ActionableSuggestion] = []
 
     bottleneck_list = list(bottlenecks)
     if bottleneck_list:
